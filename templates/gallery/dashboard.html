@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Sage | Curator Desk{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <section class="border-b border-black pb-8 mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div class="space-y-2">
+            <span class="text-[11px] uppercase tracking-[0.2em] font-bold text-neutral-500 block">System Hub // Operations</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-extrabold tracking-tight uppercase text-neutral-950">
+                Curator Dashboard
+            </h2>
+            <p class="font-serif italic text-sm text-neutral-600">
+                Central system ledger for scheduling, editing, and striking collection negatives.
+            </p>
+        </div>
+        <div>
+            <a 
+                href="{% url 'upload_image' %}" 
+                class="inline-block bg-black text-white hover:bg-neutral-800 text-xs uppercase tracking-widest font-bold py-4 px-8 border border-black transition-colors duration-200 shadow-sm"
+            >
+                + Transmit New Artifact
+            </a>
+        </div>
+    </section>
+
+    {% if images %}
+        <div class="bg-white border border-neutral-300 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-neutral-50 border-b border-neutral-300 text-[10px] uppercase tracking-widest font-bold text-neutral-700">
+                            <th class="py-4 px-6 w-20">Plate</th>
+                            <th class="py-4 px-6">Preview</th>
+                            <th class="py-4 px-6">Artifact Identification</th>
+                            <th class="py-4 px-6">Date Registered</th>
+                            <th class="py-4 px-6 text-right w-48">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-neutral-200 text-sm">
+                        {% for item in images %}
+                            <tr class="hover:bg-neutral-50/60 transition-colors group">
+                                <td class="py-5 px-6 font-serif italic text-neutral-400">
+                                    #{{ forloop.revcounter }}
+                                </td>
+                                
+                                <td class="py-5 px-6">
+                                    <div class="w-12 h-14 bg-neutral-100 border border-neutral-200 overflow-hidden relative p-0.5 bg-white shadow-xs">
+                                        <img 
+                                            src="{{ item.image.url }}" 
+                                            alt="Ledger Preview" 
+                                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                                        >
+                                    </div>
+                                </td>
+                                
+                                <td class="py-5 px-6 font-medium text-neutral-900">
+                                    <span class="block text-base font-serif font-bold group-hover:text-neutral-700 transition-colors">
+                                        {{ item.title|default:"Untitled Composition" }}
+                                    </span>
+                                    <span class="block text-[10px] font-mono text-neutral-400 mt-0.5 tracking-tight uppercase">
+                                        ID: {{ item.pk }} // FILE: {{ item.image.name|cut:"gallery/" }}
+                                    </span>
+                                </td>
+                                
+                                <td class="py-5 px-6 text-xs text-neutral-500 font-medium">
+                                    {{ item.uploaded_at|date:"d M Y // H:i" }}
+                                </td>
+                                
+                                <td class="py-5 px-6 text-right space-x-3 text-xs uppercase tracking-wider font-bold">
+                                    <a 
+                                        href="{% url 'edit_image' item.pk %}" 
+                                        class="text-neutral-700 hover:text-black border-b border-transparent hover:border-black pb-0.5 transition-all"
+                                    >
+                                        Modify
+                                    </a>
+                                    <span class="text-neutral-300">/</span>
+                                    <a 
+                                        href="{% url 'delete_image' item.pk %}" 
+                                        class="text-red-700 hover:text-red-900 border-b border-transparent hover:border-red-900 pb-0.5 transition-all"
+                                    >
+                                        Strike
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bg-neutral-50 border-t border-neutral-300 px-6 py-4 flex justify-between items-center text-[11px] font-serif italic text-neutral-500">
+                <span>Ledger records secure & synchronized</span>
+                <span class="font-sans uppercase tracking-widest font-bold text-neutral-700 not-italic">
+                    Total Assets: {{ images|length }}
+                </span>
+            </div>
+        </div>
+    {% else %}
+        <div class="max-w-xl mx-auto text-center py-24 border border-neutral-300 bg-white p-8 my-4 shadow-sm">
+            <div class="w-8 h-8 mx-auto mb-4 border border-dashed border-neutral-400 rounded-full flex items-center justify-center text-neutral-400 font-serif text-sm">?</div>
+            <p class="font-serif italic text-base text-neutral-800">No archival negative entries found in database records.</p>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mt-2 font-sans">Initialize your portfolio workspace by transmitting a file</p>
+            <div class="mt-6">
+                <a 
+                    href="{% url 'upload_image' %}" 
+                    class="inline-block bg-black text-white hover:bg-neutral-800 text-xs uppercase tracking-widest font-bold py-3 px-6 border border-black transition-colors"
+                >
+                    Transmit First Negative File
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sage | Art & Photography{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        display: ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-[#fcfbf9] text-black font-sans min-h-screen flex flex-col antialiased selection:bg-black selection:text-white">
+
+    <header class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8">
+        <div class="flex justify-between items-center text-xs tracking-widest uppercase border-b border-black pb-2 text-neutral-600">
+            <div>Published Globally</div>
+            <div class="font-medium text-black">{% now "l, F d, Y" %}</div>
+            <div>Vol. I // No. I</div>
+        </div>
+
+        <div class="text-center py-6 my-1 border-b-4 border-double border-black">
+            <a href="{% url 'gallery_index' %}" class="font-display text-5xl sm:text-7xl font-extrabold tracking-tight block hover:opacity-80 transition-opacity">
+                SAGE
+            </a>
+            <p class="font-serif italic text-sm sm:text-base text-neutral-700 mt-2 tracking-wide">
+                A Curated Chronicle of Visual Artifacts & Fine Photography
+            </p>
+        </div>
+
+        <nav class="flex justify-center items-center space-x-8 py-3 text-xs tracking-widest uppercase border-b border-black font-medium">
+            <a href="{% url 'gallery_index' %}" class="hover:text-black transition-colors hover:underline underline-offset-4 decoration-black">The Gallery</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'curator_dashboard' %}" class="hover:underline underline-offset-4 font-bold text-neutral-900 transition-colors">Curator Desk</a>
+                <a href="{% url 'upload_image' %}" class="hover:underline underline-offset-4 text-neutral-600 hover:text-black transition-colors">Transmit Entry</a>
+                
+                <form action="{% url 'logout' %}" method="POST" class="inline m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="hover:underline underline-offset-4 text-neutral-400 hover:text-black tracking-widest uppercase font-medium transition-colors cursor-pointer bg-transparent border-0 p-0 vertical-align-middle">
+                        Sign Out
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="text-neutral-400 hover:text-black transition-colors hover:underline underline-offset-4">Curator Login</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="flex-grow w-full">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 mt-16 border-t border-black py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs tracking-widest uppercase text-neutral-500">
+            <p>&copy; {% now "Y" %} Sage Gallery. All rights reserved to the artist.</p>
+            <p class="italic font-serif text-neutral-650 lowercase">printed digitally on clean canvas</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Sage | {% if is_edit %}Modify Plate Asset{% else %}Curation Dispatch{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-16 px-4">
+    
+    <div class="border-4 border-double border-black p-6 text-center bg-white shadow-sm mb-12">
+        <h2 class="font-display text-2xl font-bold tracking-wider uppercase">
+            {% if is_edit %}Modify Artifact{% else %}Curation Entry{% endif %}
+        </h2>
+        <p class="font-serif italic text-sm text-neutral-600 mt-1">
+            {% if is_edit %}Editing database record parameters for this negative asset{% else %}Add a new visual artifact to the archive{% endif %}
+        </p>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data" class="space-y-8 bg-white p-8 border border-neutral-300 shadow-sm">
+        {% csrf_token %}
+        
+        <div class="space-y-2">
+            <label class="block text-xs uppercase tracking-widest font-bold text-neutral-800">
+                Artifact Title
+            </label>
+            <div class="editorial-input-wrapper">
+                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" 
+                       class="w-full bg-white border border-neutral-300 text-black px-4 py-3 text-sm focus:outline-none focus:border-black font-sans transition-colors"
+                       placeholder="e.g., Echoes of Daylight" 
+                       value="{{ form.title.value|default_if_none:'' }}">
+            </div>
+            <p class="text-[11px] font-serif italic text-neutral-500">Leave blank for an untitled submission.</p>
+        </div>
+
+        <div class="space-y-2">
+            <label class="block text-xs uppercase tracking-widest font-bold text-neutral-800">
+                Classification Portfolio
+            </label>
+            <div class="editorial-input-wrapper">
+                <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}"
+                        class="w-full bg-white border border-neutral-300 text-black px-4 py-3 text-xs uppercase tracking-widest font-bold focus:outline-none focus:border-black font-sans transition-colors bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C/polyline%3E%3C/svg%3E')] bg-[length:16px] bg-[right_16px_center] bg-no-repeat appearance-none">
+                    {% for value, label in form.fields.category.choices %}
+                        <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <p class="text-[11px] font-serif italic text-neutral-500">Assigns the structural alignment in the public gallery view.</p>
+        </div>
+        
+        <div class="space-y-2">
+            <label class="block text-xs uppercase tracking-widest font-bold text-neutral-800">
+                Select Negative / Digital File
+            </label>
+            
+            {% if is_edit and image %}
+                <div class="mb-3 text-[11px] text-neutral-500 flex items-center space-x-2 bg-neutral-50 p-2 border border-neutral-200">
+                    <span class="font-bold uppercase tracking-wider text-[9px] bg-neutral-200 px-1.5 py-0.5 text-black">Active</span>
+                    <span class="truncate font-mono text-[10px]">{{ image.image.name }}</span>
+                </div>
+            {% endif %}
+
+            <div class="relative mt-1">
+                <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}" accept="image/*" {% if not is_edit %}required{% endif %}
+                       class="w-full bg-white border border-neutral-300 text-sm text-neutral-500
+                              file:mr-4 file:py-3 file:px-4 file:border-0 file:border-r file:border-neutral-300
+                              file:text-xs file:uppercase file:tracking-widest file:font-bold
+                              file:bg-neutral-50 file:text-black hover:file:bg-neutral-100
+                              focus:outline-none focus:border-black cursor-pointer transition-colors">
+            </div>
+            <p class="text-[11px] font-serif italic text-neutral-500">
+                {% if is_edit %}Leave empty to keep the current active file unchanged.{% else %}The master watermark will be permanently pressed upon upload.{% endif %}
+            </p>
+        </div>
+        
+        <div class="border-t border-dotted border-neutral-400 my-6"></div>
+        
+        <button 
+            type="submit" 
+            class="w-full bg-black text-white hover:bg-neutral-800 text-xs uppercase tracking-widest font-bold py-4 transition-colors duration-200 border border-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+        >
+            {% if is_edit %}Commit Modification Matrix{% else %}Publish & Process Watermark{% endif %}
+        </button>
+    </form>
+
+    <div class="text-center mt-6">
+        <a href="{% url 'curator_dashboard' %}" class="text-xs uppercase tracking-widest font-medium text-neutral-500 hover:text-black transition-colors underline underline-offset-4 decoration-neutral-300">
+            &larr; Cancel and Return to Operational Desk
+        </a>
+    </div>
+
+</div>
+{% endblock %}

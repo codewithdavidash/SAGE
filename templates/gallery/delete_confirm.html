@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Sage | Destructive Authorization{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-24 px-4">
+    
+    <div class="border-4 border-double border-black p-6 text-center bg-white shadow-sm mb-8">
+        <h2 class="font-display text-xl font-bold tracking-widest uppercase text-red-700">De-Curation Archive Request</h2>
+        <p class="font-serif italic text-xs text-neutral-600 mt-1">Permanent removal of an uploaded visual artifact</p>
+    </div>
+    
+    <div class="bg-white p-8 border border-neutral-300 shadow-sm text-center space-y-6">
+        <p class="font-serif text-sm text-neutral-800 leading-relaxed">
+            Are you absolutely certain you want to strike <span class="font-bold font-sans">"{{ image.title|default:'Untitled Composition' }}"</span> from the permanent collection register?
+        </p>
+
+        {% if image.image %}
+        <div class="aspect-[4/5] max-w-[180px] mx-auto overflow-hidden bg-neutral-100 border border-neutral-300 p-2 bg-white">
+            <img src="{{ image.image.url }}" alt="Preview" class="h-full w-full object-cover grayscale">
+        </div>
+        {% endif %}
+
+        <p class="text-[11px] font-mono text-neutral-400 bg-neutral-50 py-2 border border-dashed border-neutral-200">
+            Warning: The master file asset will be destroyed on disk.
+        </p>
+        
+        <form method="POST" class="space-y-3 pt-2">
+            {% csrf_token %}
+            
+            <button 
+                type="submit" 
+                class="w-full bg-red-700 text-white hover:bg-red-800 text-xs uppercase tracking-widest font-bold py-4 transition-colors border border-red-700 focus:outline-none"
+            >
+                Confirm Destructive Removal
+            </button>
+            
+            <a 
+                href="{% url 'curator_dashboard' %}" 
+                class="block w-full bg-white text-black hover:bg-neutral-50 text-xs uppercase tracking-widest font-bold py-4 transition-colors border border-black"
+            >
+                Abort & Return to Dashboard
+            </a>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
